@@ -17,6 +17,8 @@ Still a work in progress
 * [ ] Generators
   * [X] Migrations 
   * [ ] Routes
+  * [ ] Controller
+  * [ ] Views
   * [ ] Example Survey
 * [ ] Tasks
   * [ ] Parse
