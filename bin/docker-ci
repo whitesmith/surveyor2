@@ -1,0 +1,75 @@
+#!/usr/bin/env bash
+
+function help {
+  echo "Wrong arguments, script should be called as:"
+  echo "  ./bin/docker-ci rubyversion command [railsversion]"
+  echo ""
+  echo "rubyversion  - 2.2, 2.3 or 2.4"
+  echo "action - bash (open a bash on running container), spec, rubocop"
+  echo "railsversion - 4.0, 4.1, 4.2, 5.0 or 5.1 (required for spec, note that ruby 2.4 can't run rails 4.0 and 4.1)"
+  exit
+}
+
+if [[ $# -lt 2 ]]; then
+  help
+elif [[ $1 != "2.2" && $1 != "2.3" && $1 != "2.4" ]]; then
+  help
+elif [[ $2 != "bash" && $2 != "spec" && $2 != "rubocop" ]]; then
+  help
+elif [[ $2 == "spec" && $# -lt 3 ]]; then
+  help
+elif [[ $2 == "spec" && $1 == "2.2" && $3 != "4.0" && $3 != "4.1" && $3 != "4.2" && $3 != "5.0" && $3 != "5.1" ]]; then
+  help
+elif [[ $2 == "spec" && $1 == "2.3" && $3 != "4.0" && $3 != "4.1" && $3 != "4.2" && $3 != "5.0" && $3 != "5.1" ]]; then
+  help
+elif [[ $2 == "spec" && $1 == "2.4" && $3 != "4.2" && $3 != "5.0" && $3 != "5.1" ]]; then
+  help
+fi
+
+if [[ ! -f `pwd`/Gemfile ]]; then
+  echo "This script should be ran on the project root directory"
+  exit
+fi
+
+ruby_version=$1
+action=$2
+rails_version=$3
+uid="`id -u`"
+gid="`id -g`"
+
+dockerfile="`pwd`/dockerfiles/Dockerfile_${ruby_version}"
+work_dir="/code"
+home_dir="/home/user"
+gems_volume="surveyor_gems_${ruby_version}"
+home_volume="surveyor_home_${ruby_version}_${uid}_${gid}"
+image="whitesmith/surveyor:${ruby_version}"
+
+echo `pwd`
+echo $dockerfile
+
+opts="-u $uid:$gid -e HOME=$home_dir -v `pwd`:$work_dir -v $gems_volume:/usr/local/bundle -v $home_volume:$home_dir -w $work_dir --rm $image"
+
+pre="sudo"
+if [ `groups | grep -ic "docker"` -ge 1 ]; then
+  pre=""
+fi
+
+echo -e "--------\n## Building docker image...\n--------"
+$pre docker build -t $image -f $dockerfile .
+$pre docker volume create $gems_volume
+$pre docker volume create \
+  --opt type="tmpfs" \
+  --opt device="tmpfs" \
+  --opt o=uid=$uid,gid=$gid \
+  --name $home_volume
+echo -e "--------\n## Setup...\n--------"
+$pre docker run $opts ./bin/setup
+echo -e "--------\n## Running ${action}...\n--------"
+if [[ $action == "spec" ]]; then
+  $pre docker run $opts appraisal rails${rails_version} rake spec
+elif [[ $action == "bash" ]]; then
+  $pre docker run -it $opts bash
+elif [[ $action == "rubocop" ]]; then
+  $pre docker run $opts bundle exec rubocop -D
+fi
+

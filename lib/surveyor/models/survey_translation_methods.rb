@@ -1,0 +1,33 @@
+module Surveyor
+  module Models
+    module SurveyTranslationMethods
+      extend ActiveSupport::Concern
+
+      include ActiveModel::Validations
+      include ActiveModel::ForbiddenAttributesProtection
+      include ActiveModel::MassAssignmentSecurity if defined?(::ProtectedAttributes)
+
+      included do
+        # Associations
+        belongs_to :survey
+
+        if defined?(::ProtectedAttributes)
+          attr_accessible(*PermittedParams.new.survey_translation_attributes)
+        end
+
+        # Validations
+        validates_presence_of :locale, :translation
+        validates_uniqueness_of :locale, scope: :survey_id
+      end
+
+      # Instance Methods
+      def initialize(*args)
+        super(*args)
+        default_args
+      end
+
+      def default_args
+      end
+    end
+  end
+end

@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+
+# Install gems
+gem install bundler --conservative
+bundle check || bundle install
+
+# Run appraisal install
+bundle exec appraisal install

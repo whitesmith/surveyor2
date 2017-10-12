@@ -1,0 +1,18 @@
+Metrics/LineLength:
+  Enabled: false
+
+Metrics/BlockLength:
+  Exclude:
+    - 'Rakefile'
+    - 'spec/**/*.rb'
+
+Metrics/MethodLength:
+  Exclude:
+    - 'spec/**/*.rb'
+  
+Metrics/AbcSize:
+  Exclude:
+    - 'spec/**/*.rb'
+
+Style/RegexpLiteral:
+  AllowInnerSlashes: true
