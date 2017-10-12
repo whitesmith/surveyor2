@@ -1,7 +1,8 @@
 # Configure Rails Environment
 ENV["RAILS_ENV"] = "test"
 
-require File.expand_path("../dummy/config/environment.rb",  __FILE__)
+require 'rails/version'
+require File.expand_path("../dummies/dummy#{Rails::VERSION::MAJOR}.#{Rails::VERSION::MINOR}/config/environment.rb",  __FILE__)
 
 require 'rspec/rails'
 require 'factory_girl'
@@ -17,6 +18,8 @@ Dir["#{File.dirname(__FILE__)}/support/**/*.rb"].each { |f| require f }
 # Make sure migrations are up to date
 ActiveRecord::Migration.check_pending!
 
+puts "==== Ruby version: #{RUBY_VERSION}"
+puts "==== Rails version: #{Rails.version}"
 Rails.logger.info "==== Ruby version: #{RUBY_VERSION}"
 Rails.logger.info "==== Rails version: #{Rails.version}"
 
