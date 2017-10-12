@@ -21,6 +21,7 @@ Still a work in progress
   * [ ] Views
   * [ ] Example Survey
 * [ ] Tasks
+  * [ ] Update from Surveyor
   * [ ] Parse
   * [ ] Unparse
   * [ ] Remove
