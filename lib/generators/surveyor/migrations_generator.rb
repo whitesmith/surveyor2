@@ -1,6 +1,6 @@
 require 'rails/generators/active_record'
 
-class Surveyor::MigrationGenerator < Rails::Generators::Base
+class Surveyor::MigrationsGenerator < Rails::Generators::Base
   include Rails::Generators::Migration
   
   source_root File.expand_path('../templates', __FILE__)
@@ -47,10 +47,12 @@ class Surveyor::MigrationGenerator < Rails::Generators::Base
       )
     end
   end
-
+  
   def self.next_migration_number(dirname)
     ActiveRecord::Generators::Base.next_migration_number(dirname)
   end
+
+  private
 
   def migration_version
     if Rails.version >= "5.0.0"

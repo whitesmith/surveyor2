@@ -1,0 +1,9 @@
+<h1><%= t('.title') %></h1>
+
+<ul class="surveys-list">
+  <% @surveys.each do |survey| %>
+    <li id="survey_<%= survey.id %>">
+      <%= link_to survey.title, survey_path(survey) %>
+    </li>
+  <% end %>
+</div>

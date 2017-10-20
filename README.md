@@ -14,21 +14,24 @@ Still a work in progress
 * [X] Models
 * [X] Translations
 * [X] Parser
-* [ ] Generators
+* [X] Generators
   * [X] Migrations 
-  * [ ] Routes
-  * [ ] Controller
-  * [ ] Views
-  * [ ] Example Survey
-* [ ] Tasks
+  * [X] Routes
+  * [X] Controller
+  * [X] Views
+  * [X] Example Survey
+* [X] Tasks
   * [ ] Update from Surveyor
-  * [ ] Parse
+  * [X] Parse
   * [ ] Unparse
-  * [ ] Remove
-  * [ ] Dump
-* [ ] Controller
+  * [X] Remove
+  * [X] Dump
+* [X] Controller
 * [ ] Unparser
 * [ ] Views
+  * [X] Index
+  * [ ] Show
+  * [ ] Answer
 
 ### Development
 

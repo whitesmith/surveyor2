@@ -1,0 +1,8 @@
+en:
+  surveyor:
+    surveys:
+      index:
+        title: 'Your surveys'
+    layouts:
+      application:
+        title: 'Surveys'

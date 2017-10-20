@@ -1,4 +1,3 @@
 Rails.application.routes.draw do
-
-  mount Surveyor::Engine => "/surveyor"
+  mount Surveyor::Engine => '/surveys', as: 'surveyor'
 end
