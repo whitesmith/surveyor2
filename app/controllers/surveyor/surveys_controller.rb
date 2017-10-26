@@ -1,15 +1,5 @@
 module Surveyor
-  class SurveysController < Surveyor::ApplicationController
-    def index
-      @surveys = Survey.order(created_at: :desc, survey_version: :desc)
-    end
-
-    def show
-      @survey = Survey.find(params[:id])
-    end
-
-    def answer
-      # TODO
-    end
+  class SurveyController < Surveyor::ApplicationController
+    include Surveyor::SurveyControllerMethods
   end
 end
