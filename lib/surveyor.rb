@@ -34,7 +34,7 @@ require 'surveyor/orm/active_record/validation'
 
 require 'surveyor/parser'
 
-require 'surveyor/survey_controller_methods'
+require 'surveyor/surveys_controller_methods'
 
 module Surveyor
 end

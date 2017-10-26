@@ -1,5 +1,5 @@
 module Surveyor
-  class SurveyController < Surveyor::ApplicationController
-    include Surveyor::SurveyControllerMethods
+  class SurveysController < Surveyor::ApplicationController
+    include Surveyor::SurveysControllerMethods
   end
 end
