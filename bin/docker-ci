@@ -67,7 +67,7 @@ $pre docker run $opts ./bin/setup
 echo -e "--------\n## Running ${action} action...\n--------"
 if [[ $action == "spec" ]]; then
   echo -e "--------\n## Making sure migrations are up to date on dummy app...\n--------"
-  $pre docker run $opts appraisal rails${rails_version} rake surveyor:migration
+  $pre docker run $opts appraisal rails${rails_version} rake surveyor:migrations
   echo -e "--------\n## Running spec...\n--------"
   $pre docker run $opts appraisal rails${rails_version} rake spec
 elif [[ $action == "bash" ]]; then
