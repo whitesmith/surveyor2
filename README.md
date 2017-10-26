@@ -4,6 +4,10 @@ Fork of [surveyor](https://github.com/NUBIC/surveyor) to be compatible with rail
 
 Still a work in progress
 
+### Installation
+
+`gem 'surveyor2', require: 'surveyor'`
+
 ### Requirements
 
 * `Ruby >= 2.2.0`
