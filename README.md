@@ -36,6 +36,20 @@ Still a work in progress
   * [X] Index
   * [ ] Show
   * [ ] Answer
+  
+### Improvement to dependencies
+
+A couple of improvement have been made to the original surveyor dependency strings:
+
+* Accept parenthesis
+* Accept negations
+
+A couple of examples of possible dependencies strings now:
+
+* `A and B`
+* `(A and B) or C`
+* `!(A and !B) or C`
+* `(!(A and B) and C or !(D or !E) and F) and !(C or B)`
 
 ### Development
 
