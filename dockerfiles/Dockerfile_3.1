@@ -1,0 +1,8 @@
+FROM ruby:3.1
+
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+      build-essential nodejs libsqlite3-dev && \
+    rm -rf /var/lib/apt/lists/*
+
+EXPOSE 3000

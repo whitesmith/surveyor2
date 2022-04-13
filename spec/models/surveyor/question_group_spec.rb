@@ -2,7 +2,7 @@ require 'spec_helper'
 require 'yaml'
 
 describe Surveyor::QuestionGroup, type: :model do
-  subject(:question_group) { FactoryGirl.create(:question_group) }
+  subject(:question_group) { FactoryBot.create(:question_group) }
 
   it { should be_valid }
 
@@ -23,8 +23,8 @@ describe Surveyor::QuestionGroup, type: :model do
     end
 
     it 'reports DOM ready #css_class based on dependencies' do
-      dependency = FactoryGirl.create(:dependency)
-      response_set = FactoryGirl.create(:response_set)
+      dependency = FactoryBot.create(:dependency)
+      response_set = FactoryBot.create(:response_set)
 
       question_group.dependency = dependency
       expect(dependency).to receive(:is_met?).with(response_set) { true }
@@ -41,7 +41,7 @@ describe Surveyor::QuestionGroup, type: :model do
 
   context 'with translations' do
     let(:survey_translation) do
-      FactoryGirl.create(:survey_translation, locale: :es, translation: {
+      FactoryBot.create(:survey_translation, locale: :es, translation: {
         question_groups: {
           goodbye: {
             text: '¡Adios!'
@@ -50,9 +50,9 @@ describe Surveyor::QuestionGroup, type: :model do
       }.to_yaml)
     end
 
-    let(:survey) { FactoryGirl.create(:survey) }
-    let(:survey_section) { FactoryGirl.create(:survey_section) }
-    let(:question) { FactoryGirl.create(:question) }
+    let(:survey) { FactoryBot.create(:survey) }
+    let(:survey_section) { FactoryBot.create(:survey_section) }
+    let(:question) { FactoryBot.create(:question) }
 
     before(:each) do
       question_group.text = 'Goodbye'

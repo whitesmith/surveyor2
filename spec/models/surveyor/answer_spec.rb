@@ -1,14 +1,14 @@
 require 'spec_helper'
 
 describe Surveyor::Answer, type: :model do
-  subject(:answer) { FactoryGirl.create(:answer) }
+  subject(:answer) { FactoryBot.create(:answer) }
 
   it { should be_valid }
   it { should validate_presence_of(:text) }
 
   context 'when deleting' do
     it 'should delete validation' do
-      v_id = FactoryGirl.create(:validation, answer: answer).id
+      v_id = FactoryBot.create(:validation, answer: answer).id
       answer.destroy
       expect(Surveyor::Validation.find_by_id(v_id)).to be_nil
     end
@@ -48,10 +48,10 @@ describe Surveyor::Answer, type: :model do
   context 'with translations' do
     require 'yaml'
 
-    let(:survey) { FactoryGirl.create(:survey) }
-    let(:survey_section) { FactoryGirl.create(:survey_section) }
+    let(:survey) { FactoryBot.create(:survey) }
+    let(:survey_section) { FactoryBot.create(:survey_section) }
     let(:survey_translation) do
-      FactoryGirl.create(:survey_translation, locale: :es, translation: {
+      FactoryBot.create(:survey_translation, locale: :es, translation: {
         questions: {
           name: {
             answers: {
@@ -64,7 +64,7 @@ describe Surveyor::Answer, type: :model do
       }.to_yaml)
     end
 
-    let(:question) { FactoryGirl.create(:question, reference_identifier: 'name') }
+    let(:question) { FactoryBot.create(:question, reference_identifier: 'name') }
 
     before :each do
       answer.reference_identifier = 'name'
@@ -130,7 +130,7 @@ describe Surveyor::Answer, type: :model do
     it '#text_for with #display_type == image' do
       answer.text = 'rails.png'
       answer.display_type = :image
-      expect(answer.text_for).to match(/<img (alt="Rails" src="\/(images|assets)\/rails(-[a-f0-9]+)?\.png")|(src="\/(images|assets)\/rails(-[a-f0-9]+)?\.png" alt="Rails") \/>/)
+      expect(answer.text_for).to match(/<img (src="\/(images|assets)\/rails(-[a-f0-9]+)?\.png")|(src="\/(images|assets)\/rails(-[a-f0-9]+)?\.png") \/>/)
     end
 
     it '#text_for with #display_type == hidden_label' do

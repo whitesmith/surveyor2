@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe Surveyor::Survey, type: :model do
-  subject(:survey) { FactoryGirl.create(:survey) }
+  subject(:survey) { FactoryBot.create(:survey) }
 
   it { should be_valid }
   it { should validate_presence_of(:title) }
@@ -38,7 +38,7 @@ describe Surveyor::Survey, type: :model do
     end
 
     it '#active_at on a certain date/time' do
-      expect(survey.update_attributes(
+      expect(survey.update(
                active_at: 2.days.ago,
                inactive_at: 2.days.from_now
       )).to be_truthy
@@ -46,7 +46,7 @@ describe Surveyor::Survey, type: :model do
     end
 
     it '#inactive_at on a certain date/time' do
-      expect(survey.update_attributes(
+      expect(survey.update(
                active_at: 3.days.ago,
                inactive_at: 1.days.ago
       )).to be_truthy
@@ -61,7 +61,7 @@ describe Surveyor::Survey, type: :model do
     end
 
     it 'nils out past values of #inactive_at on #activate!' do
-      expect(survey.update_attributes(inactive_at: 5.days.ago)).to be_truthy
+      expect(survey.update(inactive_at: 5.days.ago)).to be_truthy
       expect(survey.active?).to be_falsey
       survey.activate!
       expect(survey.active?).to be_truthy
@@ -69,7 +69,7 @@ describe Surveyor::Survey, type: :model do
     end
 
     it 'nils out pas values of #active_at on #deactivate!' do
-      expect(survey.update_attributes(active_at: 5.days.ago)).to be_truthy
+      expect(survey.update(active_at: 5.days.ago)).to be_truthy
       expect(survey.active?).to be_truthy
       survey.deactivate!
       expect(survey.active?).to be_falsey
@@ -78,13 +78,13 @@ describe Surveyor::Survey, type: :model do
   end
 
   context 'with survey_sections' do
-    let(:s1) { FactoryGirl.create(:survey_section, survey: survey, title: 'wise', display_order: 2) }
-    let(:s2) { FactoryGirl.create(:survey_section, survey: survey, title: 'er', display_order: 3) }
-    let(:s3) { FactoryGirl.create(:survey_section, survey: survey, title: 'bud', display_order: 1) }
-    let(:q1) { FactoryGirl.create(:question, survey_section: s1, text: 'what is wise?', display_order: 2) }
-    let(:q2) { FactoryGirl.create(:question, survey_section: s2, text: 'what is er?', display_order: 4) }
-    let(:q3) { FactoryGirl.create(:question, survey_section: s2, text: 'what is mill?', display_order: 3) }
-    let(:q4) { FactoryGirl.create(:question, survey_section: s3, text: 'what is bud?', display_order: 1) }
+    let(:s1) { FactoryBot.create(:survey_section, survey: survey, title: 'wise', display_order: 2) }
+    let(:s2) { FactoryBot.create(:survey_section, survey: survey, title: 'er', display_order: 3) }
+    let(:s3) { FactoryBot.create(:survey_section, survey: survey, title: 'bud', display_order: 1) }
+    let(:q1) { FactoryBot.create(:question, survey_section: s1, text: 'what is wise?', display_order: 2) }
+    let(:q2) { FactoryBot.create(:question, survey_section: s2, text: 'what is er?', display_order: 4) }
+    let(:q3) { FactoryBot.create(:question, survey_section: s2, text: 'what is mill?', display_order: 3) }
+    let(:q4) { FactoryBot.create(:question, survey_section: s3, text: 'what is bud?', display_order: 1) }
 
     before do
       [s1, s2, s3].each { |s| survey.sections << s }
@@ -117,11 +117,11 @@ describe Surveyor::Survey, type: :model do
   end
 
   context 'serialization' do
-    let(:s1) { FactoryGirl.create(:survey_section, survey: survey, title: 'wise') }
-    let(:s2) { FactoryGirl.create(:survey_section, survey: survey, title: 'er') }
-    let(:q1) { FactoryGirl.create(:question, survey_section: s1, text: 'what is wise?') }
-    let(:q2) { FactoryGirl.create(:question, survey_section: s2, text: 'what is er?') }
-    let(:q3) { FactoryGirl.create(:question, survey_section: s2, text: 'what is mill?') }
+    let(:s1) { FactoryBot.create(:survey_section, survey: survey, title: 'wise') }
+    let(:s2) { FactoryBot.create(:survey_section, survey: survey, title: 'er') }
+    let(:q1) { FactoryBot.create(:question, survey_section: s1, text: 'what is wise?') }
+    let(:q2) { FactoryBot.create(:question, survey_section: s2, text: 'what is er?') }
+    let(:q3) { FactoryBot.create(:question, survey_section: s2, text: 'what is mill?') }
 
     before do
       [s1, s2].each { |s| survey.sections << s }
@@ -143,7 +143,7 @@ describe Surveyor::Survey, type: :model do
     require 'yaml'
 
     let(:survey_translation) do
-      FactoryGirl.create(:survey_translation, locale: :es, translation: {
+      FactoryBot.create(:survey_translation, locale: :es, translation: {
         title: 'Un idioma nunca es suficiente'
       }.to_yaml)
     end
@@ -153,7 +153,7 @@ describe Surveyor::Survey, type: :model do
     end
 
     it 'returns its own translation' do
-      expect(YAML.safe_load(survey_translation.translation, [Symbol])).not_to be_nil
+      expect(YAML.safe_load(survey_translation.translation, permitted_classes: [Symbol])).not_to be_nil
       expect(survey.translation(:es)[:title]).to eq('Un idioma nunca es suficiente')
     end
 

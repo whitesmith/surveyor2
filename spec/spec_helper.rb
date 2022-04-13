@@ -2,10 +2,10 @@
 ENV["RAILS_ENV"] = "test"
 
 require 'rails/version'
-require File.expand_path("../dummies/dummy#{Rails::VERSION::MAJOR}.#{Rails::VERSION::MINOR}/config/environment.rb",  __FILE__)
+require File.expand_path("../dummies/dummy#{Rails::VERSION::MAJOR}.#{Rails::VERSION::MINOR}/config/environment.rb", __FILE__)
 
 require 'rspec/rails'
-require 'factory_girl'
+require 'factory_bot'
 require 'factories'
 require 'database_cleaner'
 require 'shoulda/matchers'
@@ -26,8 +26,8 @@ Rails.logger.info "==== Rails version: #{Rails.version}"
 Rails.backtrace_cleaner.remove_silencers!
 
 RSpec.configure do |config|
-  config.before do |example|
-    DatabaseCleaner.strategy  = :transaction
+  config.before do |_example|
+    DatabaseCleaner.strategy = :transaction
     DatabaseCleaner.start
   end
 

@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe Surveyor::DependencyCondition, type: :model do
-  subject(:dependency_condition) { FactoryGirl.create(:dependency_condition) }
+  subject(:dependency_condition) { FactoryBot.create(:dependency_condition) }
 
   it { should be_valid }
   it { should validate_presence_of(:operator) }
@@ -33,10 +33,10 @@ describe Surveyor::DependencyCondition, type: :model do
   end
 
   it 'returns true for != with no responses' do
-    question = FactoryGirl.create(:question)
-    rs = FactoryGirl.create(:response_set)
+    question = FactoryBot.create(:question)
+    rs = FactoryBot.create(:response_set)
 
-    dependency_condition.update_attributes!(
+    dependency_condition.update!(
       rule_key: 'C',
       question: question
     )
@@ -45,12 +45,12 @@ describe Surveyor::DependencyCondition, type: :model do
   end
 
   it 'should not assume that Response#as is not nil' do
-    answer = FactoryGirl.create(:answer, response_class: :integer)
+    answer = FactoryBot.create(:answer, response_class: :integer)
     question = answer.question
-    response = FactoryGirl.create(:response, answer: answer, question: question)
+    response = FactoryBot.create(:response, answer: answer, question: question)
     response_set = response.response_set
 
-    dependency_condition.update_attributes!(
+    dependency_condition.update!(
       question: question,
       answer: answer,
       operator: '>',
@@ -65,11 +65,11 @@ describe Surveyor::DependencyCondition, type: :model do
   context 'operator' do
     shared_examples 'a dependency_condition operator' do |operator, result_equal, result_smaller, result_larger, result_checkbox_different|
       before(:each) do
-        @a = FactoryGirl.create(:answer, response_class: 'answer')
-        @b = FactoryGirl.create(:answer, question: @a.question)
-        @r = FactoryGirl.create(:response, question: @a.question, answer: @a)
+        @a = FactoryBot.create(:answer, response_class: 'answer')
+        @b = FactoryBot.create(:answer, question: @a.question)
+        @r = FactoryBot.create(:response, question: @a.question, answer: @a)
         @rs = @r.response_set
-        @dc = FactoryGirl.create(
+        @dc = FactoryBot.create(
           :dependency_condition,
           question: @a.question,
           answer: @a,
@@ -84,51 +84,51 @@ describe Surveyor::DependencyCondition, type: :model do
 
       it 'with checkbox/radio type response' do
         expect(@dc.to_hash(@rs)).to eq(A: result_equal)
-        @dc.update_attributes!(answer: @b)
+        @dc.update!(answer: @b)
         expect(@dc.to_hash(@rs)).to eq(A: result_checkbox_different)
       end
 
       it 'with string value response' do
-        @a.update_attributes!(response_class: 'string')
-        @r.update_attributes!(string_value: 'hello123')
-        @dc.update_attributes!(string_value: 'hello123')
+        @a.update!(response_class: 'string')
+        @r.update!(string_value: 'hello123')
+        @dc.update!(string_value: 'hello123')
         expect(@dc.to_hash(@rs)).to eq(A: result_equal)
-        @r.update_attributes!(string_value: 'aaaa')
+        @r.update!(string_value: 'aaaa')
         expect(@dc.to_hash(@rs)).to eq(A: result_smaller)
-        @r.update_attributes!(string_value: 'zzzz')
+        @r.update!(string_value: 'zzzz')
         expect(@dc.to_hash(@rs)).to eq(A: result_larger)
       end
 
       it 'with a text value response' do
-        @a.update_attributes!(response_class: 'text')
-        @r.update_attributes!(text_value: 'hello this is some text for comparison')
-        @dc.update_attributes!(text_value: 'hello this is some text for comparison')
+        @a.update!(response_class: 'text')
+        @r.update!(text_value: 'hello this is some text for comparison')
+        @dc.update!(text_value: 'hello this is some text for comparison')
         expect(@dc.to_hash(@rs)).to eq(A: result_equal)
-        @r.update_attributes!(text_value: 'aaaa')
+        @r.update!(text_value: 'aaaa')
         expect(@dc.to_hash(@rs)).to eq(A: result_smaller)
-        @r.update_attributes!(text_value: 'zzzz')
+        @r.update!(text_value: 'zzzz')
         expect(@dc.to_hash(@rs)).to eq(A: result_larger)
       end
 
       it 'with an integer value response' do
-        @a.update_attributes!(response_class: 'integer')
-        @r.update_attributes!(integer_value: 1000)
-        @dc.update_attributes!(integer_value: 1000)
+        @a.update!(response_class: 'integer')
+        @r.update!(integer_value: 1000)
+        @dc.update!(integer_value: 1000)
         expect(@dc.to_hash(@rs)).to eq(A: result_equal)
-        @r.update_attributes!(integer_value: 100)
+        @r.update!(integer_value: 100)
         expect(@dc.to_hash(@rs)).to eq(A: result_smaller)
-        @r.update_attributes!(integer_value: 10_000)
+        @r.update!(integer_value: 10_000)
         expect(@dc.to_hash(@rs)).to eq(A: result_larger)
       end
 
       it 'with a float value response' do
-        @a.update_attributes!(response_class: 'float')
-        @r.update_attributes!(float_value: 100.1)
-        @dc.update_attributes!(float_value: 100.1)
+        @a.update!(response_class: 'float')
+        @r.update!(float_value: 100.1)
+        @dc.update!(float_value: 100.1)
         expect(@dc.to_hash(@rs)).to eq(A: result_equal)
-        @r.update_attributes!(float_value: 12.123)
+        @r.update!(float_value: 12.123)
         expect(@dc.to_hash(@rs)).to eq(A: result_smaller)
-        @r.update_attributes!(float_value: 130.123)
+        @r.update!(float_value: 130.123)
         expect(@dc.to_hash(@rs)).to eq(A: result_larger)
       end
     end
@@ -160,36 +160,36 @@ describe Surveyor::DependencyCondition, type: :model do
 
   context 'evaluating with response_class string' do
     it 'should compare answer ids when the dependency condition string_value is nil' do
-      a = FactoryGirl.create(:answer, response_class: 'string')
-      r = FactoryGirl.create(:response, question: a.question, answer: a, string_value: '')
+      a = FactoryBot.create(:answer, response_class: 'string')
+      r = FactoryBot.create(:response, question: a.question, answer: a, string_value: '')
       rs = r.response_set
-      dc = FactoryGirl.create(:dependency_condition, question: a.question, answer: a, operator: '==', rule_key: 'J')
+      dc = FactoryBot.create(:dependency_condition, question: a.question, answer: a, operator: '==', rule_key: 'J')
       expect(dc.to_hash(rs)).to eq(J: true)
     end
 
     it 'should compare strings when the dependency condition string_value is not nil, even if it is blank' do
-      a = FactoryGirl.create(:answer, response_class: 'string')
-      r = FactoryGirl.create(:response, question: a.question, answer: a, string_value: 'foo')
+      a = FactoryBot.create(:answer, response_class: 'string')
+      r = FactoryBot.create(:response, question: a.question, answer: a, string_value: 'foo')
       rs = r.response_set
-      dc = FactoryGirl.create(:dependency_condition, question: a.question, answer: a, operator: '==', rule_key: 'K', string_value: 'foo')
+      dc = FactoryBot.create(:dependency_condition, question: a.question, answer: a, operator: '==', rule_key: 'K', string_value: 'foo')
       expect(dc.to_hash(rs)).to eq(K: true)
 
-      r.update_attributes(string_value: '')
+      r.update(string_value: '')
       dc.string_value = ''
       expect(dc.to_hash(rs)).to eq(K: true)
     end
   end
 
   describe "evaluate 'count' operator" do
-    let(:question) { FactoryGirl.create(:question) }
-    let(:answers) { FactoryGirl.create_list(:answer, 3, question: question, response_class: 'answer') }
-    let(:response_set) { FactoryGirl.create(:response_set) }
+    let(:question) { FactoryBot.create(:question) }
+    let(:answers) { FactoryBot.create_list(:answer, 3, question: question, response_class: 'answer') }
+    let(:response_set) { FactoryBot.create(:response_set) }
 
-    subject(:dependency_condition) { FactoryGirl.create(:dependency_condition, question: question, rule_key: 'M') }
+    subject(:dependency_condition) { FactoryBot.create(:dependency_condition, question: question, rule_key: 'M') }
 
     before(:each) do
       answers.slice(0, 2).each do |a|
-        FactoryGirl.create(:response, question: question, answer: a, response_set: response_set)
+        FactoryBot.create(:response, question: question, answer: a, response_set: response_set)
       end
     end
 

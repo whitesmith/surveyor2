@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe Surveyor::Validation, type: :model do
-  subject(:validation) { FactoryGirl.create(:validation) }
+  subject(:validation) { FactoryBot.create(:validation) }
 
   it { should be_valid }
   it { should validate_presence_of(:rule) }
@@ -17,13 +17,13 @@ describe Surveyor::Validation, type: :model do
   # TODO: improve to shared_examples
   context 'reporting its status' do
     def test_var(vhash, vchashes, ahash, rhash)
-      a = FactoryGirl.create(:answer, ahash)
-      v = FactoryGirl.create(:validation, { answer: a, rule: 'A' }.merge(vhash))
+      a = FactoryBot.create(:answer, ahash)
+      v = FactoryBot.create(:validation, { answer: a, rule: 'A' }.merge(vhash))
       vchashes.each do |vchash|
-        FactoryGirl.create(:validation_condition, { validation: v, rule_key: 'A' }.merge(vchash))
+        FactoryBot.create(:validation_condition, { validation: v, rule_key: 'A' }.merge(vchash))
       end
-      rs = FactoryGirl.create(:response_set)
-      r = FactoryGirl.create(:response, { answer: a, question: a.question }.merge(rhash))
+      rs = FactoryBot.create(:response_set)
+      r = FactoryBot.create(:response, { answer: a, question: a.question }.merge(rhash))
       rs.responses << r
       v.is_valid?(rs)
     end
@@ -39,10 +39,10 @@ describe Surveyor::Validation, type: :model do
 
   context 'with conditions' do
     it 'should destroy conditions when destroyed' do
-      validation = FactoryGirl.create(:validation)
-      FactoryGirl.create(:validation_condition, validation: @validation, rule_key: 'A')
-      FactoryGirl.create(:validation_condition, validation: @validation, rule_key: 'B')
-      FactoryGirl.create(:validation_condition, validation: @validation, rule_key: 'C')
+      validation = FactoryBot.create(:validation)
+      FactoryBot.create(:validation_condition, validation: @validation, rule_key: 'A')
+      FactoryBot.create(:validation_condition, validation: @validation, rule_key: 'B')
+      FactoryBot.create(:validation_condition, validation: @validation, rule_key: 'C')
       v_ids = validation.validation_conditions.map(&:id)
       validation.destroy
       v_ids.each { |_id| expect(Surveyor::DependencyCondition).to be_nil }

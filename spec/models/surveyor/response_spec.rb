@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe Surveyor::Response, type: :model do
-  subject(:response) { FactoryGirl.create(:response) }
+  subject(:response) { FactoryBot.create(:response) }
 
   it { should be_valid }
   it { should validate_presence_of(:question_id) }
@@ -22,13 +22,13 @@ describe Surveyor::Response, type: :model do
     response.question.correct_answer = response.answer
     expect(response.correct?).to be_truthy
 
-    response.answer = FactoryGirl.create(:answer, response_class: 'answer')
+    response.answer = FactoryBot.create(:answer, response_class: 'answer')
     expect(response.correct?).to be_falsy
   end
 
   it 'should be in order by created_at' do
     expect(response.response_set).not_to be_nil
-    response2 = FactoryGirl.create(:response, response_set: response.response_set, created_at: (response.created_at + 1))
+    response2 = FactoryBot.create(:response, response_set: response.response_set, created_at: (response.created_at + 1))
     expect(Surveyor::Response.all).to eq([response, response2])
   end
 
@@ -70,9 +70,9 @@ describe Surveyor::Response, type: :model do
   end
 
   describe 'applicable_attributes' do
-    let(:question) { FactoryGirl.create(:question, text: 'Who rules?') }
-    let(:answer) { FactoryGirl.create(:answer, question: question, text: 'Odoyle', response_class: 'answer') }
-    let(:answer_other) { FactoryGirl.create(:answer, question: question, text: 'Other', response_class: 'string') }
+    let(:question) { FactoryBot.create(:question, text: 'Who rules?') }
+    let(:answer) { FactoryBot.create(:answer, question: question, text: 'Odoyle', response_class: 'answer') }
+    let(:answer_other) { FactoryBot.create(:answer, question: question, text: 'Other', response_class: 'string') }
 
     it 'should have string_value if response_type is string' do
       good = { 'question_id' => question.id, 'answer_id' => answer_other.id, 'string_value' => 'Frank' }
@@ -111,8 +111,8 @@ describe Surveyor::Response, type: :model do
 
   describe '#json_value' do
     context 'when integer' do
-      let(:answer) { FactoryGirl.create(:answer, response_class: 'integer') }
-      subject(:response) { FactoryGirl.create(:response, answer: answer, integer_value: 2) }
+      let(:answer) { FactoryBot.create(:answer, response_class: 'integer') }
+      subject(:response) { FactoryBot.create(:response, answer: answer, integer_value: 2) }
 
       it 'should be 2' do
         expect(response.json_value).to eq(2)
@@ -120,8 +120,8 @@ describe Surveyor::Response, type: :model do
     end
 
     context 'when float' do
-      let(:answer) { FactoryGirl.create(:answer, response_class: 'float') }
-      subject(:response) { FactoryGirl.create(:response, answer: answer, float_value: 3.14) }
+      let(:answer) { FactoryBot.create(:answer, response_class: 'float') }
+      subject(:response) { FactoryBot.create(:response, answer: answer, float_value: 3.14) }
 
       it 'should be 3.14' do
         expect(response.json_value).to eq(3.14)
@@ -129,8 +129,8 @@ describe Surveyor::Response, type: :model do
     end
 
     context 'when string' do
-      let(:answer) { FactoryGirl.create(:answer, response_class: 'string') }
-      subject(:response) { FactoryGirl.create(:response, answer: answer, string_value: 'bar') }
+      let(:answer) { FactoryBot.create(:answer, response_class: 'string') }
+      subject(:response) { FactoryBot.create(:response, answer: answer, string_value: 'bar') }
 
       it "should be 'bar'" do
         expect(response.json_value).to eq('bar')
@@ -138,8 +138,8 @@ describe Surveyor::Response, type: :model do
     end
 
     context 'when datetime' do
-      let(:answer) { FactoryGirl.create(:answer, response_class: 'datetime') }
-      subject(:response) { FactoryGirl.create(:response, answer: answer, datetime_value: DateTime.strptime('2010-04-08T10:30+00:00', '%Y-%m-%dT%H:%M%z')) }
+      let(:answer) { FactoryBot.create(:answer, response_class: 'datetime') }
+      subject(:response) { FactoryBot.create(:response, answer: answer, datetime_value: DateTime.strptime('2010-04-08T10:30+00:00', '%Y-%m-%dT%H:%M%z')) }
 
       it "should be '2010-04-08T10:30+00:00'" do
         expect(response.json_value).to eq('2010-04-08T10:30+00:00')
@@ -147,8 +147,8 @@ describe Surveyor::Response, type: :model do
     end
 
     context 'when date' do
-      let(:answer) { FactoryGirl.create(:answer, response_class: 'date') }
-      subject(:response) { FactoryGirl.create(:response, answer: answer, datetime_value: DateTime.strptime('2010-04-08', '%Y-%m-%d')) }
+      let(:answer) { FactoryBot.create(:answer, response_class: 'date') }
+      subject(:response) { FactoryBot.create(:response, answer: answer, datetime_value: DateTime.strptime('2010-04-08', '%Y-%m-%d')) }
 
       it "should be '2010-04-08'" do
         expect(response.json_value).to eq('2010-04-08')
@@ -156,8 +156,8 @@ describe Surveyor::Response, type: :model do
     end
 
     context 'when time' do
-      let(:answer) { FactoryGirl.create(:answer, response_class: 'time') }
-      subject(:response) { FactoryGirl.create(:response, answer: answer, datetime_value: DateTime.strptime('10:30', '%H:%M')) }
+      let(:answer) { FactoryBot.create(:answer, response_class: 'time') }
+      subject(:response) { FactoryBot.create(:response, answer: answer, datetime_value: DateTime.strptime('10:30', '%H:%M')) }
 
       it "should be '10:30'" do
         expect(response.json_value).to eq('10:30')
