@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe Surveyor::ValidationCondition, type: :model do
-  subject(:validation_condition) { FactoryGirl.create(:validation_condition) }
+  subject(:validation_condition) { FactoryBot.create(:validation_condition) }
 
   it { should be_valid }
   it { should validate_presence_of(:operator) }
@@ -17,9 +17,9 @@ describe Surveyor::ValidationCondition, type: :model do
 
   # TODO: Change to shared examples
   def test_var(vhash, ahash, rhash)
-    v = FactoryGirl.create(:validation_condition, vhash)
-    a = FactoryGirl.create(:answer, ahash)
-    r = FactoryGirl.create(:response, { answer: a, question: a.question }.merge(rhash))
+    v = FactoryBot.create(:validation_condition, vhash)
+    a = FactoryBot.create(:answer, ahash)
+    r = FactoryBot.create(:response, { answer: a, question: a.question }.merge(rhash))
     v.is_valid?(r)
   end
 
@@ -48,11 +48,11 @@ describe Surveyor::ValidationCondition, type: :model do
 
   # TODO: Change to shared examples
   def test_var2(v_hash, a_hash, r_hash, ca_hash, cr_hash)
-    ca = FactoryGirl.create(:answer, ca_hash)
-    FactoryGirl.create(:response, cr_hash.merge(answer: ca, question: ca.question))
-    v = FactoryGirl.create(:validation_condition, v_hash.merge(question_id: ca.question.id, answer_id: ca.id))
-    a = FactoryGirl.create(:answer, a_hash)
-    r = FactoryGirl.create(:response, r_hash.merge(answer: a, question: a.question))
+    ca = FactoryBot.create(:answer, ca_hash)
+    FactoryBot.create(:response, cr_hash.merge(answer: ca, question: ca.question))
+    v = FactoryBot.create(:validation_condition, v_hash.merge(question_id: ca.question.id, answer_id: ca.id))
+    a = FactoryBot.create(:answer, a_hash)
+    r = FactoryBot.create(:response, r_hash.merge(answer: a, question: a.question))
     v.is_valid?(r)
   end
 

@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe Surveyor::Dependency, type: :model do
-  subject(:dependency) { FactoryGirl.create(:dependency) }
+  subject(:dependency) { FactoryBot.create(:dependency) }
 
   it { should be_valid }
   it { should validate_presence_of(:rule) }
@@ -19,15 +19,15 @@ describe Surveyor::Dependency, type: :model do
 
   context 'when evaluating dependency conditions of a question in a response set' do
     shared_examples 'a boolean rule matcher' do |rule, responses, result|
-      let(:question) { FactoryGirl.create(:question) }
-      let(:dependency) { FactoryGirl.create(:dependency, question: question, rule: rule) }
-      let(:response_set) { FactoryGirl.create(:response_set, survey: question.survey_section.survey) }
+      let(:question) { FactoryBot.create(:question) }
+      let(:dependency) { FactoryBot.create(:dependency, question: question, rule: rule) }
+      let(:response_set) { FactoryBot.create(:response_set, survey: question.survey_section.survey) }
 
       before(:each) do
         responses.each do |key, value|
-          answer = FactoryGirl.create(:answer, question: question, response_class: 'string')
-          FactoryGirl.create(:response, question: question, answer: answer, response_set: response_set, string_value: 'true')
-          FactoryGirl.create(:dependency_condition, question: question, dependency: dependency, answer: answer, rule_key: key.to_s, operator: '==', string_value: value.to_s)
+          answer = FactoryBot.create(:answer, question: question, response_class: 'string')
+          FactoryBot.create(:response, question: question, answer: answer, response_set: response_set, string_value: 'true')
+          FactoryBot.create(:dependency_condition, question: question, dependency: dependency, answer: answer, rule_key: key.to_s, operator: '==', string_value: value.to_s)
         end
 
         response_set.reload
@@ -64,9 +64,9 @@ describe Surveyor::Dependency, type: :model do
   end
 
   context 'with conditions' do
-    let(:dependency_condition1) { FactoryGirl.create(:dependency_condition, dependency: dependency, rule_key: 'A') }
-    let(:dependency_condition2) { FactoryGirl.create(:dependency_condition, dependency: dependency, rule_key: 'B') }
-    let(:dependency_condition3) { FactoryGirl.create(:dependency_condition, dependency: dependency, rule_key: 'C') }
+    let(:dependency_condition1) { FactoryBot.create(:dependency_condition, dependency: dependency, rule_key: 'A') }
+    let(:dependency_condition2) { FactoryBot.create(:dependency_condition, dependency: dependency, rule_key: 'B') }
+    let(:dependency_condition3) { FactoryBot.create(:dependency_condition, dependency: dependency, rule_key: 'C') }
 
     it 'should destroy conditions when destroyed' do
       dc_ids = dependency.dependency_conditions.map(&:id)

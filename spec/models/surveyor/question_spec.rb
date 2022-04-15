@@ -3,7 +3,7 @@ require 'mustache'
 require 'yaml'
 
 describe Surveyor::Question, type: :model do
-  subject(:question) { FactoryGirl.create(:question) }
+  subject(:question) { FactoryBot.create(:question) }
 
   it { should be_valid }
   it { should validate_presence_of(:text) }
@@ -31,7 +31,7 @@ describe Surveyor::Question, type: :model do
     end
 
     it '#part_of_group? and #solo? are aware of question groups' do
-      question.question_group = FactoryGirl.create(:question_group)
+      question.question_group = FactoryBot.create(:question_group)
       expect(question.solo?).to be_falsy
       expect(question.part_of_group?).to be_truthy
 
@@ -42,9 +42,9 @@ describe Surveyor::Question, type: :model do
   end
 
   context 'with answers' do
-    let(:answer_1) { FactoryGirl.create(:answer, question: question, display_order: 3, text: 'blue') }
-    let(:answer_2) { FactoryGirl.create(:answer, question: question, display_order: 1, text: 'red') }
-    let(:answer_3) { FactoryGirl.create(:answer, question: question, display_order: 2, text: 'green') }
+    let(:answer_1) { FactoryBot.create(:answer, question: question, display_order: 3, text: 'blue') }
+    let(:answer_2) { FactoryBot.create(:answer, question: question, display_order: 1, text: 'red') }
+    let(:answer_3) { FactoryBot.create(:answer, question: question, display_order: 2, text: 'green') }
 
     before(:each) do
       [answer_1, answer_2, answer_3].each { |a| question.answers << a }
@@ -67,8 +67,8 @@ describe Surveyor::Question, type: :model do
   end
 
   context 'with dependencies' do
-    let(:response_set) { FactoryGirl.create(:response_set) }
-    let(:dependency) { FactoryGirl.create(:dependency) }
+    let(:response_set) { FactoryBot.create(:response_set) }
+    let(:dependency) { FactoryBot.create(:dependency) }
 
     before(:each) do
       question.dependency = dependency
@@ -111,10 +111,10 @@ describe Surveyor::Question, type: :model do
   end
 
   context 'with translations' do
-    let(:survey) { FactoryGirl.create(:survey) }
-    let(:survey_section) { FactoryGirl.create(:survey_section) }
+    let(:survey) { FactoryBot.create(:survey) }
+    let(:survey_section) { FactoryBot.create(:survey_section) }
     let(:survey_translation) do
-      FactoryGirl.create(:survey_translation, locale: :es, translation: {
+      FactoryBot.create(:survey_translation, locale: :es, translation: {
         questions: {
           hello: {
             text: '¡Hola!'
@@ -131,7 +131,7 @@ describe Surveyor::Question, type: :model do
     end
 
     it 'returns its own translation' do
-      expect(YAML.safe_load(survey_translation.translation, [Symbol])).not_to be_nil
+      expect(YAML.safe_load(survey_translation.translation, permitted_classes: [Symbol])).not_to be_nil
       expect(question.translation(:es)[:text]).to eq('¡Hola!')
     end
 
@@ -181,7 +181,7 @@ describe Surveyor::Question, type: :model do
     it '#text_for with #display_type == image' do
       question.text = 'rails.png'
       question.display_type = :image
-      expect(question.text_for).to match(/<img (alt="Rails" src="\/(images|assets)\/rails(-[a-f0-9]+)?\.png")|(src="\/(images|assets)\/rails(-[a-f0-9]+)?\.png" alt="Rails") \/>/)
+      expect(question.text_for).to match(/<img (src="\/(images|assets)\/rails(-[a-f0-9]+)?\.png")|(src="\/(images|assets)\/rails(-[a-f0-9]+)?\.png") \/>/)
     end
 
     it '#help_text_for' do

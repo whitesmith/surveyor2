@@ -2,15 +2,15 @@ require 'spec_helper'
 require 'yaml'
 
 describe Surveyor::SurveySection, type: :model do
-  subject(:survey_section) { FactoryGirl.create(:survey_section) }
+  subject(:survey_section) { FactoryBot.create(:survey_section) }
 
   it { should be_valid }
   it { should validate_presence_of(:title) }
 
   context 'with questions' do
-    let(:question_1) { FactoryGirl.create(:question, survey_section: survey_section, display_order: 3, text: 'Peep') }
-    let(:question_2) { FactoryGirl.create(:question, survey_section: survey_section, display_order: 1, text: 'Little') }
-    let(:question_3) { FactoryGirl.create(:question, survey_section: survey_section, display_order: 2, text: 'Bo') }
+    let(:question_1) { FactoryBot.create(:question, survey_section: survey_section, display_order: 3, text: 'Peep') }
+    let(:question_2) { FactoryBot.create(:question, survey_section: survey_section, display_order: 1, text: 'Little') }
+    let(:question_3) { FactoryBot.create(:question, survey_section: survey_section, display_order: 2, text: 'Bo') }
 
     before(:each) do
       [question_1, question_2, question_3].each do |q|
@@ -35,9 +35,9 @@ describe Surveyor::SurveySection, type: :model do
   end
 
   context 'with translations' do
-    let(:survey) { FactoryGirl.create(:survey) }
+    let(:survey) { FactoryBot.create(:survey) }
     let(:survey_translation) do
-      FactoryGirl.create(:survey_translation, locale: :es, translation: {
+      FactoryBot.create(:survey_translation, locale: :es, translation: {
         survey_sections: {
           one: {
             title: 'Uno'
@@ -53,7 +53,7 @@ describe Surveyor::SurveySection, type: :model do
     end
 
     it 'returns its own translation' do
-      expect(YAML.safe_load(survey_translation.translation, [Symbol])).not_to be_nil
+      expect(YAML.safe_load(survey_translation.translation, permitted_classes: [Symbol])).not_to be_nil
       expect(survey_section.translation(:es)[:title]).to eq('Uno')
     end
 

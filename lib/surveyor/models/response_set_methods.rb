@@ -85,7 +85,7 @@ module Surveyor
       end
 
       def correctness_hash
-        { 
+        {
           questions: Survey.where(id: self.survey_id).includes(sections: :questions).first.sections.map(&:questions).flatten.compact.size,
           responses: responses.compact.size,
           correct: responses.find_all(&:correct?).compact.size
@@ -100,7 +100,7 @@ module Surveyor
         qs = Survey.where(id: self.survey_id).includes(sections: :questions).first.sections.map(&:questions).flatten
         ds = dependencies(qs.map(&:id))
         triggered = qs - ds.select { |d| !d.is_met?(self) }.map(&:question)
-        { 
+        {
           questions: qs.compact.size,
           triggered: triggered.compact.size,
           triggered_mandatory: triggered.select { |q| q.mandatory? }.compact.size,
@@ -172,7 +172,7 @@ module Surveyor
                 fail "Illegal attempt to change question for response #{api_id}."
               end
 
-              existing.update_attributes(updateable_attributes)
+              existing.update(updateable_attributes)
             else
               responses.build(updateable_attributes).tap do |r|
                 r.api_id = api_id

@@ -48,7 +48,7 @@ module Surveyor
 
       return unless source_code = source_code[start_on_line..end_on_line]
       line_counter = start_on_line
-      source_code.sum do |sline|
+      source_code.sum('') do |sline|
         line_counter += 1
         "#{line_counter}: #{sline}\n"
       end
@@ -224,7 +224,7 @@ module SurveyorParserSurveyTranslationMethods
   def parse_and_build(context, args, original_method, reference_identifier)
     dir = Surveyor::Parser.options[:filename].nil? ? Dir.pwd : File.dirname(Surveyor::Parser.options[:filename])
     # build, no change in context
-    args[0].each do |k,v|
+    args[0].each do |k, v|
       case v
       when Hash
         trans = YAML::dump(v)
@@ -233,10 +233,13 @@ module SurveyorParserSurveyTranslationMethods
       when :default
         trans = YAML::dump({})
       end
-      context[:survey].translations << self.class.new(Surveyor::PermittedParams.new(locale: k.to_s, translation: trans).survey_translation)
+      context[:survey].translations << self.class.new(Surveyor::PermittedParams.new({ locale: k.to_s, translation: trans }).survey_translation)
     end
   end
 end
+
+# warning: Passing only keyword arguments to Struct#initialize will behave differently from Ruby 3.2.
+# Please use a Hash literal like .new({k: v}) instead of .new(k: v).
 
 # SurveySection model
 module SurveyorParserSurveySectionMethods
