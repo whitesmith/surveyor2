@@ -1,5 +1,7 @@
 # Surveyor2
 
+![Continuous Integration](https://github.com/whitesmith/surveyor2/actions/workflows/build.yml/badge.svg)
+
 Fork of [surveyor](https://github.com/NUBIC/surveyor) to be compatible with rails 5 and more modern
 
 Still a work in progress
@@ -70,7 +72,7 @@ The test suite makes use of dummy apps to test the installation of surveyor on a
 If you need to add a new version, do the following:
 
 1. Generate a minimal rails app with the target version
-  ````
+  ```
     rails _RAILS_VERSION_ new --skip-gemfile --skip-javascript--skip-webpack-install --skip-bootsnap --skip-turbolinks --skip-jbuilder --skip-test --skip-system-test --skip-listen --skip-spring --skip-sprockets --skip-action-cable --skip-active-job --skip-active-storage --skip-action-text --skip-action-mailbox --skip-action-mailer --skip-hotwire
   ```
   Where `_RAILS_VERSION_` will be something like `_7.0.1_`.
