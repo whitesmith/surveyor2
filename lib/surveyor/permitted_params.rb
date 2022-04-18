@@ -66,7 +66,7 @@ module Surveyor
       strong_parameters.permit(*dependency_condition_attributes)
     end
     def dependency_condition_attributes
-      [:dependency, :question, :answer, :dependency_id, :rule_key, :question_id, :operator, :answer_id, :datetime_value, :integer_value, :float_value, :unit, :text_value, :string_value, :response_other, :question_reference, :answer_reference]
+      [:dependency, :question, :answer, :dependency_id, :rule_key, :question_id, :operator, :answer_id, :datetime_value, :integer_value, :float_value, :unit, :text_value, :string_value, :response_other, :question_reference, :answer_reference, :condition_type, :logic_reference]
     end
 
     # validation

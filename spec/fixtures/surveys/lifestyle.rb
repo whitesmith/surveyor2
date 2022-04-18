@@ -19,6 +19,12 @@ survey "Lifestyle" do
     a_2 "integer"
     dependency :rule => "D"
     condition_D :q_copd_sh_1b, "==", :a_current_as_of_one_month
+
+    q_copd_sh_1cc "Do you think you'll be saved?"
+    a_0 "Yes"
+    a_1 "No"
+    dependency :rule => "A"
+    condition_A "religious", "==", { condition_type: 'logic', text_value: "true" }
   end
   section "Pets" do
     q_pets "How many pets do you own?"

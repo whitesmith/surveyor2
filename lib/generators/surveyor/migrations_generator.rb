@@ -2,7 +2,7 @@ require 'rails/generators/active_record'
 
 class Surveyor::MigrationsGenerator < Rails::Generators::Base
   include Rails::Generators::Migration
-  
+
   source_root File.expand_path('../templates', __FILE__)
   desc 'Instal Surveyor migrations'
 
@@ -36,6 +36,7 @@ class Surveyor::MigrationsGenerator < Rails::Generators::Base
     api_ids_must_be_unique
     create_survey_translations
     add_input_mask_attributes_to_answer
+    add_condition_type_fields_to_dependency_conditions
   )
 
   def install
@@ -47,7 +48,7 @@ class Surveyor::MigrationsGenerator < Rails::Generators::Base
       )
     end
   end
-  
+
   def self.next_migration_number(dirname)
     ActiveRecord::Generators::Base.next_migration_number(dirname)
   end
