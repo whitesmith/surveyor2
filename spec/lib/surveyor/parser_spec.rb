@@ -64,7 +64,7 @@ describe Surveyor::Parser do
     end
   end
 
-  context 'depdencies and validations' do
+  context 'dependencies and validations' do
     let(:file) { File.new(TEST_SURVEYS_PATH + '/lifestyle.rb') }
     subject! { Surveyor::Parser.new.parse(File.read(file)) }
 
@@ -72,20 +72,20 @@ describe Surveyor::Parser do
       expect(Surveyor::Survey.count).to eq(1)
       expect(Surveyor::SurveySection.count).to eq(2)
       expect(Surveyor::QuestionGroup.count).to eq(1)
-      expect(Surveyor::Question.count).to eq(10)
-      expect(Surveyor::Answer.count).to eq(12)
-      expect(Surveyor::Dependency.count).to eq(6)
-      expect(Surveyor::DependencyCondition.count).to eq(6)
+      expect(Surveyor::Question.count).to eq(11)
+      expect(Surveyor::Answer.count).to eq(14)
+      expect(Surveyor::Dependency.count).to eq(7)
+      expect(Surveyor::DependencyCondition.count).to eq(7)
       expect(Surveyor::Validation.count).to eq(2)
       expect(Surveyor::ValidationCondition.count).to eq(2)
-      depdendencies = [{ rule: 'B', question_reference_identifier: 'copd_sh_1b' },
+      dependencies = [{ rule: 'B', question_reference_identifier: 'copd_sh_1b' },
                        { rule: 'C', question_reference_identifier: 'copd_sh_1ba' },
                        { rule: 'D', question_reference_identifier: 'copd_sh_1bb' },
                        { rule: 'Q', question_group_reference_identifier: 'one_pet' },
                        { rule: 'R', question_reference_identifier: 'very_creative' },
                        { rule: 'S', question_reference_identifier: 'oh_my' }]
-      depdendencies.each { |attrs| (expect(Surveyor::Dependency.where(rule: attrs[:rule]).first.question.reference_identifier).to eq(attrs[:question_reference_identifier])) if attrs[:question_reference_identifier] }
-      depdendencies.each { |attrs| (expect(Surveyor::Dependency.where(rule: attrs[:rule]).first.question_group.reference_identifier).to eq(attrs[:question_group_reference_identifier])) if attrs[:question_group_reference_identifier] }
+      dependencies.each { |attrs| (expect(Surveyor::Dependency.where(rule: attrs[:rule]).first.question.reference_identifier).to eq(attrs[:question_reference_identifier])) if attrs[:question_reference_identifier] }
+      dependencies.each { |attrs| (expect(Surveyor::Dependency.where(rule: attrs[:rule]).first.question_group.reference_identifier).to eq(attrs[:question_group_reference_identifier])) if attrs[:question_group_reference_identifier] }
       dependency_conditions = [{ rule_key: 'B', question_reference_identifier: 'copd_sh_1', answer_reference_identifier: '1' },
                                { rule_key: 'C', question_reference_identifier: 'copd_sh_1b', answer_reference_identifier: 'quit' },
                                { rule_key: 'D', question_reference_identifier: 'copd_sh_1b', answer_reference_identifier: 'current_as_of_one_month' },

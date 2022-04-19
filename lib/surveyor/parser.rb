@@ -178,9 +178,15 @@ module Surveyor
     def resolve_dependency_condition_references
       self.context[:dependency_conditions].each do |dc|
         # Looking up references to questions and answers for linking the dependency objects
-        self.context[:bad_references].push "q_#{dc.question_reference}" unless (dc.question = self.context[:question_references][dc.question_reference])
+        if dc.condition_type != "logic" && (dc.question = self.context[:question_references][dc.question_reference]).nil?
+          self.context[:bad_references].push "q_#{dc.question_reference}"
+        end
+
         self.context[:answer_references][dc.question_reference] ||= {}
-        self.context[:bad_references].push "q_#{dc.question_reference}, a_#{dc.answer_reference}" if !dc.answer_reference.blank? and (dc.answer = self.context[:answer_references][dc.question_reference][dc.answer_reference]).nil?
+
+        if !dc.answer_reference.blank? and (dc.answer = self.context[:answer_references][dc.question_reference][dc.answer_reference]).nil?
+          self.context[:bad_references].push "q_#{dc.question_reference}, a_#{dc.answer_reference}"
+        end
       end
     end
   end
@@ -367,7 +373,10 @@ module SurveyorParserDependencyMethods
     ].each { |k| context.delete(k) }
 
     # build and set context
-    self.attributes = Surveyor::PermittedParams.new(args[0] || {}).dependency
+    hash_args = args[0]
+    self.attributes = Surveyor::PermittedParams.new({
+      rule: hash_args[:rule],
+    }).dependency
     if context[:question]
       context[:dependency] = context[:question].dependency = self
     elsif context[:question_group]
@@ -388,11 +397,27 @@ module SurveyorParserDependencyConditionMethods
 
     # build and set context
     a0, a1, a2 = args
-    self.attributes = Surveyor::PermittedParams.new({
+    payload = {
       operator: a1 || "==",
-      question_reference: a0.to_s.gsub(/^q_|^question_/, ""),
       rule_key: reference_identifier
-    }.merge( a2.is_a?(Hash) ? a2 : { answer_reference: a2.to_s.gsub(/^a_|^answer_/, "") })).dependency_condition
+    }
+
+    if a2.is_a?(Hash)
+      payload.merge!(a2)
+    else
+      payload.merge!({ answer_reference: a2.to_s.gsub(/^a_|^answer_/, "") })
+    end
+
+    if payload[:condition_type] == "logic"
+      payload.merge!({ logic_reference: a0 })
+    else
+      payload.merge!({ question_reference: a0.to_s.gsub(/^q_|^question_/, "") })
+    end
+
+    self.attributes = Surveyor::PermittedParams.new(
+      payload
+    ).dependency_condition
+
     context[:dependency].dependency_conditions << context[:dependency_condition] = self
     context[:dependency_conditions] << self
   end
