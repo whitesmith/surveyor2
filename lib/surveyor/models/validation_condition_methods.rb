@@ -11,7 +11,9 @@ module Surveyor
       included do
         # Associations
         belongs_to :validation
-        
+        belongs_to :question
+        belongs_to :answer
+
         if defined?(::ProtectedAttributes)
           attr_accessible(*PermittedParams.new.validation_condition_attributes)
         end

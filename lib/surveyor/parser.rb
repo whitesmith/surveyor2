@@ -95,6 +95,7 @@ module Surveyor
           resolve_question_correct_answers
           report_lost_and_duplicate_references
           report_missing_default_locale
+          resolve_validation_condition_references
           Surveyor::Parser.rake_trace("", -2)
           if context[:survey].save
             Surveyor::Parser.rake_trace "Survey saved."
@@ -189,6 +190,20 @@ module Surveyor
         end
       end
     end
+
+    def resolve_validation_condition_references
+      self.context[:validation_conditions].each do |vc|
+        if (vc.question = self.context[:question_references][vc.question_reference]).nil?
+          self.context[:bad_references].push "q_#{vc.question_reference}"
+        end
+
+        self.context[:answer_references][vc.question_reference] ||= {}
+
+        if !vc.answer_reference.blank? and (vc.answer = self.context[:answer_references][vc.question_reference][vc.answer_reference]).nil?
+          self.context[:bad_references].push "q_#{vc.question_reference}, a_#{vc.answer_reference}"
+        end
+      end
+    end
   end
 end
 
@@ -219,6 +234,7 @@ module SurveyorParserSurveyMethods
       :bad_references => [],
       :duplicate_references => [],
       :dependency_conditions => [],
+      :validation_conditions => [],
       :questions_with_correct_answers => {},
       :default_mandatory => false
     })
@@ -506,6 +522,10 @@ end
 
 # ValidationCondition model
 module SurveyorParserValidationConditionMethods
+  Surveyor::ValidationCondition.instance_eval do
+    attr_accessor :question_reference, :answer_reference
+  end
+
   def parse_and_build(context, args, original_method, reference_identifier)
     # clear context
     context.delete :validation_condition
@@ -516,6 +536,8 @@ module SurveyorParserValidationConditionMethods
       operator: a0 || "==",
       rule_key: reference_identifier
     }.merge(a1 || {})).validation_condition
+
     context[:validation].validation_conditions << context[:validation_condition] = self
+    context[:validation_conditions] << self
   end
 end
